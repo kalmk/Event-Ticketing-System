@@ -8,4 +8,6 @@ import com.example.event_ticketing_system.entity.Booking;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
+    // Get total revenue for an event
+    
 }

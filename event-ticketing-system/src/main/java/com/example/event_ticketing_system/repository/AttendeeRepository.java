@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.event_ticketing_system.entity.Attendee;
 
 @Repository
-public interface  AttendeeRepository extends JpaRepository<Attendee, Integer>{
+public interface AttendeeRepository extends JpaRepository<Attendee, Integer>{
     
 }
