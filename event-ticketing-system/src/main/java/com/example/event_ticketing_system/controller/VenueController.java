@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.event_ticketing_system.entity.Venue;
+import com.example.event_ticketing_system.service.VenueService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,5 +26,14 @@ public class VenueController {
         System.out.println("capacity = " + venue.getTotal_capacity());
         Venue saved = venueService.createVenue(venue);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+}
+    private final VenueService venueService;
+
+    @PostMapping
+    public ResponseEntity<Venue> createVenue(@RequestBody Venue venue) {
+        Venue created = venueService.createVenue(venue);
+
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 }
