@@ -2,11 +2,14 @@ package com.example.event_ticketing_system.service;
 
 import com.example.event_ticketing_system.dto.EventRequestDTO;
 import com.example.event_ticketing_system.dto.EventResponseDTO;
+import com.example.event_ticketing_system.dto.TicketTypeDTO;
 import com.example.event_ticketing_system.entity.Event;
 import com.example.event_ticketing_system.entity.Organizer;
+import com.example.event_ticketing_system.entity.TicketType;
 import com.example.event_ticketing_system.entity.Venue;
 import com.example.event_ticketing_system.repository.EventRepository;
 import com.example.event_ticketing_system.repository.OrganizerRepository;
+import com.example.event_ticketing_system.repository.TicketTypeRepository;
 import com.example.event_ticketing_system.repository.VenueRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,75 +24,131 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class EventService {
 
-    private final EventRepository eventRepository;
-    private final OrganizerRepository organizerRepository;
-    private final VenueRepository venueRepository;
+        private final EventRepository eventRepository;
+        private final OrganizerRepository organizerRepository;
+        private final VenueRepository venueRepository;
+        private final TicketTypeRepository ticketTypeRepository;
 
-    @Transactional
+        @Transactional
+        public EventResponseDTO createEvent(EventRequestDTO dto) {
+                Organizer organizer = organizerRepository.findById(dto.getOrganizer_id())
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Organizer not found"));
 
-    public EventResponseDTO createEvent(EventRequestDTO dto) {
+                Venue venue = venueRepository.findById(dto.getVenue_id())
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Venue not found"));
 
-        Organizer organizer = organizerRepository.findById(dto.getOrganizer_id())
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Organizer not found"));
+                // Validate ticket quantities before saving
+                int totalTickets = dto.getTicketTypes()
+                                .stream()
+                                .mapToInt(TicketTypeDTO::getQuantity_available)
+                                .sum();
 
-        Venue venue = venueRepository.findById(dto.getVenue_id())
-                .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Venue not found"));
+                if (totalTickets != venue.getTotal_capacity()) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Total tickets must equal venue capacity");
+                }
 
-        Event event = new Event();
-        event.setTitle(dto.getTitle());
-        event.setDescription(dto.getDescription());
-        event.setEvent_date(dto.getEvent_date());
-        event.setStatus(dto.getStatus());
-        event.setOrganizer(organizer);
-        event.setVenue(venue);
+                Event event = new Event();
+                event.setTitle(dto.getTitle());
+                event.setDescription(dto.getDescription());
+                event.setEvent_date(dto.getEvent_date());
+                event.setStatus(dto.getStatus());
+                event.setOrganizer(organizer);
+                event.setVenue(venue);
 
-        Event saved = eventRepository.save(event);
+                Event savedEvent = eventRepository.save(event);
 
-        EventResponseDTO response = new EventResponseDTO();
-        response.setEvent_id(saved.getEvent_id());
-        response.setTitle(saved.getTitle());
-        response.setDescription(saved.getDescription());
-        response.setEvent_date(saved.getEvent_date());
-        response.setStatus(saved.getStatus().name());
-        response.setOrganizerName(saved.getOrganizer().getName());
-        response.setVenueName(saved.getVenue().getName());
+                // Save ticket types and convert to DTO list
+                List<TicketTypeDTO> ticketDTOList = dto.getTicketTypes().stream().map(ticketDTO -> {
 
-        return response;
-    }
+                        TicketType ticket = new TicketType();
+                        ticket.setName(ticketDTO.getName());
+                        ticket.setPrice(ticketDTO.getPrice());
+                        ticket.setQuantity_available(ticketDTO.getQuantity_available());
+                        ticket.setEvent(savedEvent);
 
-    // Get all events method
-    public List<EventResponseDTO> getAllEvents() {
-        List<Event> events = eventRepository.findAll();
+                        TicketType savedTicket = ticketTypeRepository.save(ticket);
 
-        return events.stream().map(event -> {
-            EventResponseDTO response = new EventResponseDTO();
-            response.setEvent_id(event.getEvent_id());
-            response.setTitle(event.getTitle());
-            response.setDescription(event.getDescription());
-            response.setEvent_date(event.getEvent_date());
-            response.setStatus(event.getStatus().name());
-            response.setOrganizerName(event.getOrganizer().getName());
-            response.setVenueName(event.getVenue().getName());
-            return response;
-        }).toList();
-    }
+                        return new TicketTypeDTO(
+                                        savedTicket.getName(),
+                                        savedTicket.getPrice(),
+                                        savedTicket.getQuantity_available());
 
-    // Get event by id
-    public EventResponseDTO getEventById(Integer id) {
-        Event event = eventRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found"));
+                }).toList();
 
-        EventResponseDTO response = new EventResponseDTO();
-        response.setEvent_id(event.getEvent_id());
-        response.setTitle(event.getTitle());
-        response.setDescription(event.getDescription());
-        response.setEvent_date(event.getEvent_date());
-        response.setStatus(event.getStatus().name());
-        response.setOrganizerName(event.getOrganizer().getName());
-        response.setVenueName(event.getVenue().getName());
+                EventResponseDTO response = new EventResponseDTO();
+                response.setEvent_id(savedEvent.getEvent_id());
+                response.setTitle(savedEvent.getTitle());
+                response.setDescription(savedEvent.getDescription());
+                response.setEvent_date(savedEvent.getEvent_date());
+                response.setStatus(savedEvent.getStatus().name());
+                response.setOrganizerName(savedEvent.getOrganizer().getName());
+                response.setVenueName(savedEvent.getVenue().getName());
+                response.setTicketTypes(ticketDTOList);
 
-        return response;
-    }
+                return response;
+        }
+
+        // Get all events method
+        public List<EventResponseDTO> getAllEvents() {
+
+                List<Event> events = eventRepository.findAll();
+
+                return events.stream().map(event -> {
+
+                        List<TicketTypeDTO> ticketTypes = ticketTypeRepository
+                                        .findByEvent(event)
+                                        .stream()
+                                        .map(ticket -> new TicketTypeDTO(
+                                                        ticket.getName(),
+                                                        ticket.getPrice(),
+                                                        ticket.getQuantity_available()))
+                                        .toList();
+
+                        EventResponseDTO response = new EventResponseDTO();
+                        response.setEvent_id(event.getEvent_id());
+                        response.setTitle(event.getTitle());
+                        response.setDescription(event.getDescription());
+                        response.setEvent_date(event.getEvent_date());
+                        response.setStatus(event.getStatus().name());
+                        response.setOrganizerName(event.getOrganizer().getName());
+                        response.setVenueName(event.getVenue().getName());
+                        response.setTicketTypes(ticketTypes);
+
+                        return response;
+
+                }).toList();
+        }
+
+        // Get event by id
+        public EventResponseDTO getEventById(Integer id) {
+
+                Event event = eventRepository.findById(id)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND, "Event not found"));
+
+                List<TicketTypeDTO> ticketTypes = ticketTypeRepository
+                                .findByEvent(event)
+                                .stream()
+                                .map(ticket -> new TicketTypeDTO(
+                                                ticket.getName(),
+                                                ticket.getPrice(),
+                                                ticket.getQuantity_available()))
+                                .toList();
+
+                EventResponseDTO response = new EventResponseDTO();
+                response.setEvent_id(event.getEvent_id());
+                response.setTitle(event.getTitle());
+                response.setDescription(event.getDescription());
+                response.setEvent_date(event.getEvent_date());
+                response.setStatus(event.getStatus().name());
+                response.setOrganizerName(event.getOrganizer().getName());
+                response.setVenueName(event.getVenue().getName());
+                response.setTicketTypes(ticketTypes);
+
+                return response;
+        }
 }

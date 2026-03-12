@@ -1,13 +1,13 @@
 package com.example.event_ticketing_system.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Data;
 import com.example.event_ticketing_system.entity.Event.EventStatus;
 
 @Data
 public class EventRequestDTO {
-
     private String title;
     private String description;
     private LocalDateTime event_date;
@@ -15,4 +15,5 @@ public class EventRequestDTO {
     private Integer organizer_id;
     private Integer venue_id;
 
+    private List<TicketTypeDTO> ticketTypes;
 }
