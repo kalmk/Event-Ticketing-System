@@ -4,6 +4,7 @@ import com.example.event_ticketing_system.dto.EventRequestDTO;
 import com.example.event_ticketing_system.dto.EventResponseDTO;
 import com.example.event_ticketing_system.dto.TicketTypeDTO;
 import com.example.event_ticketing_system.entity.Event;
+import com.example.event_ticketing_system.entity.Event.EventStatus;
 import com.example.event_ticketing_system.entity.Organizer;
 import com.example.event_ticketing_system.entity.TicketType;
 import com.example.event_ticketing_system.entity.Venue;
@@ -93,9 +94,8 @@ public class EventService {
         }
 
         // Get all events method
-        public List<EventResponseDTO> getAllEvents() {
-
-                List<Event> events = eventRepository.findAll();
+        public List<EventResponseDTO> getUpcomingEvents() {
+                List<Event> events = eventRepository.findByStatus(EventStatus.UPCOMING);
 
                 return events.stream().map(event -> {
 
