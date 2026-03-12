@@ -32,8 +32,8 @@ public class EventController {
 
     // GET /api/events
     @GetMapping
-    public ResponseEntity<List<EventResponseDTO>>getAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+    public ResponseEntity<List<EventResponseDTO>>getUpcomingEvents() {
+        return ResponseEntity.ok(eventService.getUpcomingEvents());
     }
 
     // GET /api/events/{id}
