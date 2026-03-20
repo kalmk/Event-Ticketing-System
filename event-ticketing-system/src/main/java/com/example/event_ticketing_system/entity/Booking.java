@@ -37,6 +37,14 @@ public class Booking {
         booking_date = LocalDateTime.now();
     }
 
+    public void setBookingReference(String s) {
+        this.booking_reference = s;
+    }
+
+    public void setBookingDate(LocalDateTime now) {
+        this.booking_date = now;
+    }
+
     public enum PaymentStatus {
         PENDING,
         CONFIRMED,
