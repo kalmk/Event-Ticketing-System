@@ -20,7 +20,7 @@ public class BookingController {
 
 
     @PostMapping
-    public ResponseEntity<BookingResponseDTO> bookTicket(@RequestBody BookingRequestDTO dto) {
+    public ResponseEntity<BookingResponseDTO> bookTicket(@RequestBody BookingRequestDTO dto) throws Exception {
         BookingResponseDTO response = bookingService.createBooking(dto);
 
         return ResponseEntity

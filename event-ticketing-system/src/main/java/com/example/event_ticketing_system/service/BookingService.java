@@ -31,13 +31,15 @@ public class BookingService {
     }
 
     @Transactional
-    public BookingResponseDTO createBooking(BookingRequestDTO dto) {
+    public BookingResponseDTO createBooking(BookingRequestDTO dto) throws Exception {
         // Check if the ticket exists
         boolean available = bookingRepository.ticketExistsInQuantity(
                 dto.getTicketTypeId()
         );
-
-        // Throw if unavailable?
+        
+        if (!available) {
+            throw new Exception("Tickets sold out for ticket id: " + dto.getTicketTypeId());
+        }
 
         // Check if the attendee has already booked the same ticket
         boolean alreadyBookedTicketType = bookingRepository.existsByAttendeeAttendeeIdAndTicketTypeId(
@@ -45,7 +47,10 @@ public class BookingService {
                 dto.getTicketTypeId()
         );
 
-        // Throw if already booked same ticket?
+        // Throw if already booked same ticket
+        if (alreadyBookedTicketType) {
+            throw new Exception("The current attendee already has a ticket of id: " + dto.getTicketTypeId());
+        }
 
 
         // Decrement quantity_available on TicketType by 1
@@ -62,8 +67,10 @@ public class BookingService {
         booking.setPayment_status(Booking.PaymentStatus.valueOf("CONFIRMED"));
 
         // Get Attendee and TicketType to finish building BookingResponseDTO
-        Attendee attendee = attendeeRepository.findById(dto.getAttendeeId());
-        TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId());
+        Attendee attendee = attendeeRepository.findById(dto.getAttendeeId())
+                .orElseThrow(() -> new Exception("Attendee not found with id: " + dto.getAttendeeId()));
+        TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId())
+                .orElseThrow(() -> new Exception("Ticket Type not found with id: " + dto.getTicketTypeId()));
 
         booking.setAttendee(attendee);
         booking.setTicketType(ticketType);

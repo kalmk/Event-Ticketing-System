@@ -1,6 +1,7 @@
 package com.example.event_ticketing_system.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +26,5 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, Integer>
     void decrementQuantityAvailable(@Param("ticketTypeId") Integer ticketTypeId);
 
     // Query used in BookingService to find ticket in order to finalize booking
-    TicketType findById(Integer ticketTypeId);
+    Optional<TicketType> findById(Integer ticketTypeId);
 }
