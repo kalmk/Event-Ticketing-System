@@ -36,15 +36,22 @@ public class BookingService {
         boolean available = bookingRepository.ticketExistsInQuantity(
                 dto.getTicketTypeId()
         );
-        
+
         if (!available) {
             throw new Exception("Tickets sold out for ticket id: " + dto.getTicketTypeId());
         }
 
+        // Get Attendee and TicketType to check if they have already booked a ticket
+        Attendee attendee = attendeeRepository.findById(dto.getAttendeeId())
+                .orElseThrow(() -> new Exception("Attendee not found with id: " + dto.getAttendeeId()));
+        TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId())
+                .orElseThrow(() -> new Exception("Ticket Type not found with id: " + dto.getTicketTypeId()));
+
+
         // Check if the attendee has already booked the same ticket
-        boolean alreadyBookedTicketType = bookingRepository.existsByAttendeeAttendeeIdAndTicketTypeId(
-                dto.getAttendeeId(),
-                dto.getTicketTypeId()
+        boolean alreadyBookedTicketType = bookingRepository.existsByAttendeeAndTicketType(
+                attendee,
+                ticketType
         );
 
         // Throw if already booked same ticket
@@ -66,12 +73,6 @@ public class BookingService {
         // Set payment_status to CONFIRMED on creation
         booking.setPayment_status(Booking.PaymentStatus.valueOf("CONFIRMED"));
 
-        // Get Attendee and TicketType to finish building BookingResponseDTO
-        Attendee attendee = attendeeRepository.findById(dto.getAttendeeId())
-                .orElseThrow(() -> new Exception("Attendee not found with id: " + dto.getAttendeeId()));
-        TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId())
-                .orElseThrow(() -> new Exception("Ticket Type not found with id: " + dto.getTicketTypeId()));
-
         booking.setAttendee(attendee);
         booking.setTicketType(ticketType);
 
@@ -88,5 +89,17 @@ public class BookingService {
         response.setPrice(saved.getTicketType().getPrice());
 
         return response;
+    }
+
+
+    @Transactional
+    public BookingResponseDTO cancelBooking(BookingResponseDTO dto) {
+        // Verify the booking exists and is not already cancelled
+
+
+        // Set payment_status to "CANCELLED"
+
+        // Increment quantity_available on TicketType by 1
+
     }
 }
