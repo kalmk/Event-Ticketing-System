@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.example.event_ticketing_system.entity.Attendee;
 
+import java.util.Optional;
+
 @Repository
 public interface AttendeeRepository extends JpaRepository<Attendee, Integer> {
     //manual JPQL query
@@ -14,5 +16,5 @@ public interface AttendeeRepository extends JpaRepository<Attendee, Integer> {
     boolean emailExists(@Param("email") String email);
 
     // Query used in BookingService to find attendee in order to finalize booking
-    Attendee findById(Integer attendeeId);
+    Optional<Attendee> findById(Integer attendeeId);
 }

@@ -1,5 +1,7 @@
 package com.example.event_ticketing_system.repository;
 
+import com.example.event_ticketing_system.entity.Attendee;
+import com.example.event_ticketing_system.entity.TicketType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +18,5 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     boolean ticketExistsInQuantity(@Param("ticketTypeId") Integer ticketTypeId);
 
     // JPA automatic query to check if this attendee already has booked this ticketType
-    boolean existsByAttendeeAttendeeIdAndTicketTypeId(Integer attendeeId, Integer ticketTypeId);
+    boolean existsByAttendeeAndTicketType(Attendee attendee, TicketType ticketType);
 }
