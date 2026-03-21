@@ -12,14 +12,10 @@ public class RevenueService {
 
     private final EventRepository eventRepository;
 
-    public RevenueDTO getEventRevenue(Integer event_id) throws Exception {
-        // Find Event Title and Revenue
-        //      Note: Our query returns title and revenue in an object array
-        Object[] result = eventRepository.getRawRevenueData(event_id)
-                .orElseThrow(() -> new EntityNotFoundException("No data found"));
+    public RevenueDTO getEventRevenue(Integer event_id) {
 
-        // Make a RevenueDTO and return it
-        return new RevenueDTO((String) result[0], (Integer) result[1]);
+        return eventRepository.getRevenueDTO(event_id)
+                .orElseThrow(() -> new EntityNotFoundException("No data found"));
     }
 
 }
