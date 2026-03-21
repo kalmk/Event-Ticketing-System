@@ -74,6 +74,7 @@ public class EventService {
                         TicketType savedTicket = ticketTypeRepository.save(ticket);
 
                         return new TicketTypeDTO(
+                                        savedTicket.getTicket_type_id(),
                                         savedTicket.getName(),
                                         savedTicket.getPrice(),
                                         savedTicket.getQuantity_available());
@@ -103,6 +104,7 @@ public class EventService {
                                         .findByEvent(event)
                                         .stream()
                                         .map(ticket -> new TicketTypeDTO(
+                                                        ticket.getTicket_type_id(),
                                                         ticket.getName(),
                                                         ticket.getPrice(),
                                                         ticket.getQuantity_available()))
@@ -134,6 +136,7 @@ public class EventService {
                                 .findByEvent(event)
                                 .stream()
                                 .map(ticket -> new TicketTypeDTO(
+                                                ticket.getTicket_type_id(),
                                                 ticket.getName(),
                                                 ticket.getPrice(),
                                                 ticket.getQuantity_available()))
