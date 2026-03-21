@@ -26,13 +26,6 @@ public class BookingService {
     private final TicketTypeRepository ticketTypeRepository;
     private final AttendeeRepository attendeeRepository;
 
-    // Do I need this constructor?
-//    public BookingService(BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, AttendeeRepository attendeeRepository) {
-//        this.bookingRepository = bookingRepository;
-//        this.ticketTypeRepository = ticketTypeRepository;
-//        this.attendeeRepository = attendeeRepository;
-//    }
-
     @Transactional
     public BookingResponseDTO createBooking(BookingRequestDTO dto) throws Exception {
         // Check if the ticket exists
