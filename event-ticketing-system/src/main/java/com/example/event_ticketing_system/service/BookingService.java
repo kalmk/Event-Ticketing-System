@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@RestControllerAdvice   // Using this to catch 'EntityNotFoundException' and throw a 404 not found error
+@RestControllerAdvice // Using this to catch 'EntityNotFoundException' and throw a 404 not found error
 @Service
 @RequiredArgsConstructor
 public class BookingService {
@@ -29,8 +29,7 @@ public class BookingService {
     public BookingResponseDTO createBooking(BookingRequestDTO dto) throws Exception {
         // Check if the ticket exists
         boolean available = bookingRepository.ticketExistsInQuantity(
-                dto.getTicketTypeId()
-        );
+                dto.getTicketTypeId());
 
         if (!available) {
             throw new Exception("Tickets sold out for ticket id: " + dto.getTicketTypeId());
@@ -42,18 +41,15 @@ public class BookingService {
         TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId())
                 .orElseThrow(() -> new Exception("Ticket Type not found with id: " + dto.getTicketTypeId()));
 
-
         // Check if the attendee has already booked the same ticket
         boolean alreadyBookedTicketType = bookingRepository.existsByAttendeeAndTicketType(
                 attendee,
-                ticketType
-        );
+                ticketType);
 
         // Throw if already booked same ticket
         if (alreadyBookedTicketType) {
             throw new Exception("The current attendee already has a ticket of id: " + dto.getTicketTypeId());
         }
-
 
         // Decrement quantity_available on TicketType by 1
         ticketTypeRepository.decrementQuantityAvailable(dto.getTicketTypeId());
@@ -76,6 +72,7 @@ public class BookingService {
 
         // Convert our saved booking object to BookingRequestDTO to return result
         BookingResponseDTO response = new BookingResponseDTO();
+        response.setBookingId(saved.getBooking_id());
         response.setBookingReference(saved.getBooking_reference());
         response.setBookingDate(saved.getBooking_date());
         response.setPaymentStatus(String.valueOf(saved.getPayment_status()));
@@ -87,37 +84,34 @@ public class BookingService {
         return response;
     }
 
-
     @Transactional
-    public BookingResponseDTO cancelBooking(BookingRequestDTO dto, Integer id) throws Exception {
-        // Verify the booking exists and is not already cancelled
+    public BookingResponseDTO cancelBooking(Integer id) throws Exception {
+
         Booking booking = bookingRepository.findByBookingId(id)
-                .orElseThrow(() -> new Exception("Booking not found for attendee Id: " + dto.getAttendeeId()));
+                .orElseThrow(() -> new Exception("Booking not found for id: " + id));
 
         if (booking.getPayment_status() == Booking.PaymentStatus.CANCELLED) {
-            throw new Exception("This Booking has already been cancelled for attende Id: " + dto.getAttendeeId());
+            throw new Exception("Booking already cancelled");
         }
 
-        // Set payment_status to "CANCELLED"
-        int rowsChanged = bookingRepository.cancelBookingById(booking.getBooking_id());
+        // Update status directly on entity
+        booking.setPayment_status(Booking.PaymentStatus.CANCELLED);
 
-        if (rowsChanged <= 0) {
-            throw new Exception("Error while cancelling ticket");
-        }
+        // Restore ticket quantity safely
+        ticketTypeRepository.incrementQuantityAvailable(
+                booking.getTicketType().getTicket_type_id());
 
-        // Increment quantity_available on TicketType by 1
-        ticketTypeRepository.incrementQuantityAvailable(dto.getTicketTypeId());
-
-        // Save changes to our bookingRepo
         Booking saved = bookingRepository.save(booking);
 
-        // Convert our saved booking object to BookingRequestDTO to return result
+        // Build response
         BookingResponseDTO response = new BookingResponseDTO();
+        response.setBookingId(saved.getBooking_id());
         response.setBookingReference(saved.getBooking_reference());
         response.setBookingDate(saved.getBooking_date());
-        response.setPaymentStatus(String.valueOf(saved.getPayment_status()));
+        response.setPaymentStatus(saved.getPayment_status().name());
         response.setAttendeeName(saved.getAttendee().getName());
-        response.setEventTitle(String.valueOf(saved.getTicketType().getEvent().getTitle()));
+        response.setEventTitle(saved.getTicketType().getEvent().getTitle());
+        response.setTicketTypeName(saved.getTicketType().getName());
         response.setPrice(saved.getTicketType().getPrice());
 
         return response;
