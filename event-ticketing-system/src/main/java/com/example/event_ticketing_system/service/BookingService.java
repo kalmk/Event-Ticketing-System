@@ -10,6 +10,7 @@ import com.example.event_ticketing_system.repository.BookingRepository;
 import com.example.event_ticketing_system.repository.TicketTypeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @RestControllerAdvice   // Using this to catch 'EntityNotFoundException' and throw a 404 not found error
 @Service
+@RequiredArgsConstructor
 public class BookingService {
 
     private final BookingRepository bookingRepository;
@@ -25,11 +27,11 @@ public class BookingService {
     private final AttendeeRepository attendeeRepository;
 
     // Do I need this constructor?
-    public BookingService(BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, AttendeeRepository attendeeRepository) {
-        this.bookingRepository = bookingRepository;
-        this.ticketTypeRepository = ticketTypeRepository;
-        this.attendeeRepository = attendeeRepository;
-    }
+//    public BookingService(BookingRepository bookingRepository, TicketTypeRepository ticketTypeRepository, AttendeeRepository attendeeRepository) {
+//        this.bookingRepository = bookingRepository;
+//        this.ticketTypeRepository = ticketTypeRepository;
+//        this.attendeeRepository = attendeeRepository;
+//    }
 
     @Transactional
     public BookingResponseDTO createBooking(BookingRequestDTO dto) throws Exception {
@@ -45,7 +47,7 @@ public class BookingService {
         // Get Attendee and TicketType to check if they have already booked a ticket
         Attendee attendee = attendeeRepository.findById(dto.getAttendeeId())
                 .orElseThrow(() -> new Exception("Attendee not found with id: " + dto.getAttendeeId()));
-        TicketType ticketType = ticketTypeRepository.findTicketTypeByTicket_type_id(dto.getTicketTypeId())
+        TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId())
                 .orElseThrow(() -> new Exception("Ticket Type not found with id: " + dto.getTicketTypeId()));
 
 
