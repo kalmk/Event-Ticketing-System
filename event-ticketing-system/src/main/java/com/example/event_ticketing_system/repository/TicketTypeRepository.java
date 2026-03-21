@@ -14,7 +14,6 @@ import com.example.event_ticketing_system.entity.TicketType;
 
 @Repository
 public interface TicketTypeRepository extends JpaRepository<TicketType, Integer> {
-
     List<TicketType> findByEvent(Event event);
 
     // Query used to book a ticket by decrementing quantity_available by 1

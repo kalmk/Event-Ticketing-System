@@ -15,21 +15,20 @@ import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
+	@Query("SELECT b FROM Booking b WHERE b.booking_id = :booking_id")
+	Optional<Booking> findByBookingId(Integer booking_id);
 
-        @Query("SELECT b FROM Booking b WHERE b.booking_id = :booking_id")
-        Optional<Booking> findByBookingId(Integer booking_id);
+	@Modifying
+	@Transactional
+	@Query("UPDATE Booking b SET b.payment_status = 'CANCELLED' " +
+			"WHERE b.booking_id = :booking_id")
+	int cancelBookingById(Integer booking_id);
 
-        @Modifying
-        @Transactional
-        @Query("UPDATE Booking b SET b.payment_status = 'CANCELLED' " +
-                        "WHERE b.booking_id = :booking_id")
-        int cancelBookingById(Integer booking_id);
+	@Query("SELECT COUNT(t) > 0 FROM TicketType t " +
+			"WHERE t.ticket_type_id = :ticketTypeId AND t.quantity_available > 0")
+	boolean ticketExistsInQuantity(@Param("ticketTypeId") Integer ticketTypeId);
 
-        @Query("SELECT COUNT(t) > 0 FROM TicketType t " +
-                        "WHERE t.ticket_type_id = :ticketTypeId AND t.quantity_available > 0")
-        boolean ticketExistsInQuantity(@Param("ticketTypeId") Integer ticketTypeId);
-
-        @Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.attendee = :attendee AND b.ticketType = :ticketType")
-        boolean existsByAttendeeAndTicketType(@Param("attendee") Attendee attendee,
-                        @Param("ticketType") TicketType ticketType);
+	@Query("SELECT COUNT(b) > 0 FROM Booking b WHERE b.attendee = :attendee AND b.ticketType = :ticketType")
+	boolean existsByAttendeeAndTicketType(@Param("attendee") Attendee attendee,
+			@Param("ticketType") TicketType ticketType);
 }
