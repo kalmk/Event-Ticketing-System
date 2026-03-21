@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Organizer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer organizer_id;
 
     @Column(nullable = false)

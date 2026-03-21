@@ -7,5 +7,5 @@ import com.example.event_ticketing_system.entity.Organizer;
 
 @Repository
 public interface OrganizerRepository extends JpaRepository<Organizer, Integer> {
-    
+
 }

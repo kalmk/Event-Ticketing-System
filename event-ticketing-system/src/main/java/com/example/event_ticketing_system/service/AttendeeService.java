@@ -76,7 +76,7 @@ public class AttendeeService {
         BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
 
         // Fill BookingResponseDTO object
-        bookingResponseDTO.setBookingId(booking.getBooking_id()); 
+        bookingResponseDTO.setBookingId(booking.getBooking_id());
         bookingResponseDTO.setBookingReference(booking.getBooking_reference());
         bookingResponseDTO.setBookingDate(booking.getBooking_date());
         bookingResponseDTO.setPaymentStatus(String.valueOf(booking.getPayment_status()));

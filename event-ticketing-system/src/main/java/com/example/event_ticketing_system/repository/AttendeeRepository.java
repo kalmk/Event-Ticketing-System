@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface AttendeeRepository extends JpaRepository<Attendee, Integer> {
-    //manual JPQL query
+    // manual JPQL query
     @Query("SELECT COUNT(a) > 0 FROM Attendee a WHERE a.email = :email")
     boolean emailExists(@Param("email") String email);
 

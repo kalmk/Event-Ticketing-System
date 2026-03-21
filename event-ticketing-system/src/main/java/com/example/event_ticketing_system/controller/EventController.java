@@ -32,10 +32,9 @@ public class EventController {
                 .body(response);
     }
 
-
     // GET /api/events
     @GetMapping
-    public ResponseEntity<List<EventResponseDTO>>getUpcomingEvents() {
+    public ResponseEntity<List<EventResponseDTO>> getUpcomingEvents() {
         return ResponseEntity.ok(eventService.getUpcomingEvents());
     }
 
@@ -52,4 +51,3 @@ public class EventController {
     }
 
 }
-

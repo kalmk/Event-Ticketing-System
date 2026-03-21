@@ -1,4 +1,5 @@
 package com.example.event_ticketing_system.dto;
+
 import lombok.Data;
 
 @Data

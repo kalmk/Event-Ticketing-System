@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import lombok.Data;
 import java.util.List;
 
-
 @Data
 public class EventResponseDTO {
     private Integer event_id;
