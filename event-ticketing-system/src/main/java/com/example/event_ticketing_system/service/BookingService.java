@@ -81,6 +81,7 @@ public class BookingService {
         response.setPaymentStatus(String.valueOf(saved.getPayment_status()));
         response.setAttendeeName(saved.getAttendee().getName());
         response.setEventTitle(String.valueOf(saved.getTicketType().getEvent().getTitle()));
+        response.setTicketTypeName(saved.getTicketType().getName());
         response.setPrice(saved.getTicketType().getPrice());
 
         return response;
