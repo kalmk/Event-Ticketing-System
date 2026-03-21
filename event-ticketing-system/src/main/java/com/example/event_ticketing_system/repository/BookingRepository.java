@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("SELECT b FROM Booking b WHERE b.booking_id = :booking_id")
-    Optional<Booking> findBookingByBooking_id(Integer booking_id);
+    Optional<Booking> findByBookingId(Integer booking_id);
 
 //    @Query("SELECT b FROM Booking b WHERE b.attendee.attendee_id = :attendeeID AND " +
 //           "b.ticketType.ticket_type_id = :ticketTypeId")

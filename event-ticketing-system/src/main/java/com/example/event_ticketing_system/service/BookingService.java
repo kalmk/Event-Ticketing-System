@@ -98,7 +98,7 @@ public class BookingService {
     @Transactional
     public BookingResponseDTO cancelBooking(BookingRequestDTO dto, Integer id) throws Exception {
         // Verify the booking exists and is not already cancelled
-        Booking booking = bookingRepository.findBookingByBooking_id(id)
+        Booking booking = bookingRepository.findByBookingId(id)
                 .orElseThrow(() -> new Exception("Booking not found for attendee Id: " + dto.getAttendeeId()));
 
         if (booking.getPayment_status().equals("Cancelled")) {
