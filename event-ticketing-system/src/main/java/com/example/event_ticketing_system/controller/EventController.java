@@ -2,8 +2,10 @@ package com.example.event_ticketing_system.controller;
 
 import com.example.event_ticketing_system.dto.EventRequestDTO;
 import com.example.event_ticketing_system.dto.EventResponseDTO;
+import com.example.event_ticketing_system.dto.RevenueDTO;
 import com.example.event_ticketing_system.service.EventService;
 
+import com.example.event_ticketing_system.service.RevenueService;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final RevenueService revenueService;
 
     // POST /api/events
     @PostMapping
@@ -43,10 +46,10 @@ public class EventController {
     }
 
     // GET /api/events/{id}/revenue
-//    @GetMapping("/{id}/revenue")
-//    public ResponseEntity<EventResponseDTO> getEventRevenue(@PathVariable Integer id) {
-//
-//    }
+    @GetMapping("/{id}/revenue")
+    public ResponseEntity<RevenueDTO> getEventRevenue(@PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok(revenueService.getEventRevenue(id));
+    }
 
 }
 
