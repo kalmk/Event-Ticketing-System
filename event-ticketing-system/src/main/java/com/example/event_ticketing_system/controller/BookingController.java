@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class BookingController {
     private final BookingService bookingService;
 
-
     @PostMapping
     public ResponseEntity<BookingResponseDTO> bookTicket(@RequestBody BookingRequestDTO dto) throws Exception {
         BookingResponseDTO response = bookingService.createBooking(dto);
@@ -25,12 +24,11 @@ public class BookingController {
                 .body(response);
     }
 
-    @PostMapping("/{id}/cancel")
-    public ResponseEntity<BookingResponseDTO> cancelTicket(@RequestBody BookingRequestDTO dto, @PathVariable String id) throws Exception {
-        BookingResponseDTO response = bookingService.cancelBooking(dto, Integer.valueOf(id));
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<BookingResponseDTO> cancelBooking(@PathVariable Integer id) throws Exception {
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+        BookingResponseDTO response = bookingService.cancelBooking(id);
+
+        return ResponseEntity.ok(response);
     }
 }

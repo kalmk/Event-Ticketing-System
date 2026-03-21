@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingResponseDTO {
+    private Integer bookingId;
     private String bookingReference;
     private LocalDateTime bookingDate;
     private String paymentStatus;
