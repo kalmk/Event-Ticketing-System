@@ -8,6 +8,7 @@ import com.example.event_ticketing_system.entity.TicketType;
 import com.example.event_ticketing_system.repository.AttendeeRepository;
 import com.example.event_ticketing_system.repository.BookingRepository;
 import com.example.event_ticketing_system.repository.TicketTypeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -44,7 +45,7 @@ public class BookingService {
         // Get Attendee and TicketType to check if they have already booked a ticket
         Attendee attendee = attendeeRepository.findById(dto.getAttendeeId())
                 .orElseThrow(() -> new Exception("Attendee not found with id: " + dto.getAttendeeId()));
-        TicketType ticketType = ticketTypeRepository.findById(dto.getTicketTypeId())
+        TicketType ticketType = ticketTypeRepository.findTicketTypeByTicket_type_id(dto.getTicketTypeId())
                 .orElseThrow(() -> new Exception("Ticket Type not found with id: " + dto.getTicketTypeId()));
 
 
@@ -93,13 +94,37 @@ public class BookingService {
 
 
     @Transactional
-    public BookingResponseDTO cancelBooking(BookingResponseDTO dto) {
+    public BookingResponseDTO cancelBooking(BookingRequestDTO dto, Integer id) throws Exception {
         // Verify the booking exists and is not already cancelled
+        Booking booking = bookingRepository.findBookingByBooking_id(id)
+                .orElseThrow(() -> new Exception("Booking not found for attendee Id: " + dto.getAttendeeId()));
 
+        if (booking.getPayment_status().equals("Cancelled")) {
+            throw new Exception("This Booking has already been cancelled for attende Id: " + dto.getAttendeeId());
+        }
 
         // Set payment_status to "CANCELLED"
+        int rowsChanged = bookingRepository.cancelBookingById(booking.getBooking_id());
+
+        if (rowsChanged <= 0) {
+            throw new Exception("Error while cancelling ticket");
+        }
 
         // Increment quantity_available on TicketType by 1
+        ticketTypeRepository.incrementQuantityAvailable(dto.getTicketTypeId());
 
+        // Save changes to our bookingRepo
+        Booking saved = bookingRepository.save(booking);
+
+        // Convert our saved booking object to BookingRequestDTO to return result
+        BookingResponseDTO response = new BookingResponseDTO();
+        response.setBookingReference(saved.getBooking_reference());
+        response.setBookingDate(saved.getBooking_date());
+        response.setPaymentStatus(String.valueOf(saved.getPayment_status()));
+        response.setAttendeeName(saved.getAttendee().getName());
+        response.setEventTitle(String.valueOf(saved.getTicketType().getEvent()));
+        response.setPrice(saved.getTicketType().getPrice());
+
+        return response;
     }
 }

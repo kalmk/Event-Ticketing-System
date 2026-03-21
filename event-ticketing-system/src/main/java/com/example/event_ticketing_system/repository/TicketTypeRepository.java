@@ -25,6 +25,12 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, Integer>
             "WHERE t.ticket_type_id = :ticketTypeId")
     void decrementQuantityAvailable(@Param("ticketTypeId") Integer ticketTypeId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE TicketType t SET t.quantity_available = t.quantity_available + 1" +
+           "WHERE t.ticket_type_id = :ticketTypeId")
+    void incrementQuantityAvailable(@Param("ticketTypeId") Integer ticketTypeId);
+
     // Query used in BookingService to find ticket in order to finalize booking
-    Optional<TicketType> findById(Integer ticketTypeId);
+    Optional<TicketType> findTicketTypeByTicket_type_id(Integer ticketTypeId);
 }
