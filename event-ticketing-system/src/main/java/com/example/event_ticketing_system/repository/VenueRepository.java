@@ -7,5 +7,5 @@ import com.example.event_ticketing_system.entity.Venue;
 
 @Repository
 public interface VenueRepository extends JpaRepository<Venue, Integer> {
-    
+
 }

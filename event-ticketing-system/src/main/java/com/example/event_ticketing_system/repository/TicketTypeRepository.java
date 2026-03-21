@@ -13,8 +13,8 @@ import com.example.event_ticketing_system.entity.Event;
 import com.example.event_ticketing_system.entity.TicketType;
 
 @Repository
-public interface TicketTypeRepository extends JpaRepository<TicketType, Integer>{
-    
+public interface TicketTypeRepository extends JpaRepository<TicketType, Integer> {
+
     List<TicketType> findByEvent(Event event);
 
     // Query used to book a ticket by decrementing quantity_available by 1
@@ -27,6 +27,6 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, Integer>
     @Modifying
     @Transactional
     @Query("UPDATE TicketType t SET t.quantity_available = t.quantity_available + 1" +
-           "WHERE t.ticket_type_id = :ticketTypeId")
+            "WHERE t.ticket_type_id = :ticketTypeId")
     void incrementQuantityAvailable(@Param("ticketTypeId") Integer ticketTypeId);
 }

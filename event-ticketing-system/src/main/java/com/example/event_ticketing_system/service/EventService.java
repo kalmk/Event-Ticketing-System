@@ -94,7 +94,7 @@ public class EventService {
                 return response;
         }
 
-        // Get all UPCOMING events 
+        // Get all UPCOMING events
         public List<EventResponseDTO> getUpcomingEvents() {
                 List<Event> events = eventRepository.findByStatus(EventStatus.UPCOMING);
 

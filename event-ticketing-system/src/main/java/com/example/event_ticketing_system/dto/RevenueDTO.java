@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RevenueDTO {
     private String eventTitle;
-    private BigDecimal  totalConfirmedRevenue;
+    private BigDecimal totalConfirmedRevenue;
 }
