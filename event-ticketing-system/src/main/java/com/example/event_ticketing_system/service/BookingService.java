@@ -93,7 +93,7 @@ public class BookingService {
         Booking booking = bookingRepository.findByBookingId(id)
                 .orElseThrow(() -> new Exception("Booking not found for attendee Id: " + dto.getAttendeeId()));
 
-        if (booking.getPayment_status().equals("Cancelled")) {
+        if (booking.getPayment_status() == Booking.PaymentStatus.CANCELLED) {
             throw new Exception("This Booking has already been cancelled for attende Id: " + dto.getAttendeeId());
         }
 
