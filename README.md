@@ -3,7 +3,7 @@
 - Kshitji Pingle
 - Mariia Nikitash
 
-## Event Ticketing System
+## Overview of the project
 
 - A backend API for managing events, venues, organizers, different types of tickets, and the attendees who book them.
 
