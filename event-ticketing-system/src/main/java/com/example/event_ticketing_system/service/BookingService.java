@@ -81,7 +81,7 @@ public class BookingService {
         response.setBookingDate(saved.getBooking_date());
         response.setPaymentStatus(String.valueOf(saved.getPayment_status()));
         response.setAttendeeName(saved.getAttendee().getName());
-        response.setEventTitle(String.valueOf(saved.getTicketType().getEvent()));
+        response.setEventTitle(String.valueOf(saved.getTicketType().getEvent().getTitle()));
         response.setPrice(saved.getTicketType().getPrice());
 
         return response;
@@ -117,7 +117,7 @@ public class BookingService {
         response.setBookingDate(saved.getBooking_date());
         response.setPaymentStatus(String.valueOf(saved.getPayment_status()));
         response.setAttendeeName(saved.getAttendee().getName());
-        response.setEventTitle(String.valueOf(saved.getTicketType().getEvent()));
+        response.setEventTitle(String.valueOf(saved.getTicketType().getEvent().getTitle()));
         response.setPrice(saved.getTicketType().getPrice());
 
         return response;
