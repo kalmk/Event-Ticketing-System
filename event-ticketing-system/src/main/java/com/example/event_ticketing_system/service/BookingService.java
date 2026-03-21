@@ -8,7 +8,6 @@ import com.example.event_ticketing_system.entity.TicketType;
 import com.example.event_ticketing_system.repository.AttendeeRepository;
 import com.example.event_ticketing_system.repository.BookingRepository;
 import com.example.event_ticketing_system.repository.TicketTypeRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

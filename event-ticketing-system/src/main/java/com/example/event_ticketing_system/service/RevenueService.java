@@ -1,7 +1,6 @@
 package com.example.event_ticketing_system.service;
 
 import com.example.event_ticketing_system.dto.RevenueDTO;
-import com.example.event_ticketing_system.entity.Event;
 import com.example.event_ticketing_system.repository.EventRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
