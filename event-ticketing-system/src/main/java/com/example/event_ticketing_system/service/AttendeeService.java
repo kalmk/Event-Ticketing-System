@@ -64,7 +64,6 @@ public class AttendeeService {
             bookingResponseDTOList.add(bookingResponseDTO);
         }
 
-
         AttendeeBookingsDTO response = new AttendeeBookingsDTO();
         response.setAttendee_name(attendee.getName());
         response.setBookings(bookingResponseDTOList);
@@ -77,6 +76,7 @@ public class AttendeeService {
         BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
 
         // Fill BookingResponseDTO object
+        bookingResponseDTO.setBookingId(booking.getBooking_id()); 
         bookingResponseDTO.setBookingReference(booking.getBooking_reference());
         bookingResponseDTO.setBookingDate(booking.getBooking_date());
         bookingResponseDTO.setPaymentStatus(String.valueOf(booking.getPayment_status()));
@@ -84,7 +84,7 @@ public class AttendeeService {
         bookingResponseDTO.setEventTitle(booking.getTicketType().getEvent().getTitle());
         bookingResponseDTO.setTicketTypeName(booking.getTicketType().getName());
         bookingResponseDTO.setPrice(booking.getTicketType().getPrice());
+
         return bookingResponseDTO;
     }
 }
-
