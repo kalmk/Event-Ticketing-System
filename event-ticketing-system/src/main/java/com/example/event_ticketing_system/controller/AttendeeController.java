@@ -1,5 +1,6 @@
 package com.example.event_ticketing_system.controller;
 
+import com.example.event_ticketing_system.dto.AttendeeBookingsDTO;
 import com.example.event_ticketing_system.dto.AttendeeRequestDTO;
 import com.example.event_ticketing_system.dto.AttendeeResponseDTO;
 import com.example.event_ticketing_system.service.AttendeeService;
@@ -9,11 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/attendees")
@@ -29,5 +26,11 @@ public class AttendeeController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    // GET "/api/attendees/{id}/bookings"
+    @GetMapping("/{id}/bookings")
+    public ResponseEntity<AttendeeBookingsDTO> getAttendeeBookings(@PathVariable Integer id) throws Exception {
+        return ResponseEntity.ok(attendeeService.getAttendeeBookings(id));
     }
 }
