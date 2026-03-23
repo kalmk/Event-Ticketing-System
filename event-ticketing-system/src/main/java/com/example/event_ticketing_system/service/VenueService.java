@@ -18,7 +18,6 @@ public class VenueService {
     @Transactional
     public VenueResponseDTO createVenue(VenueRequestDTO requestDTO) {
 
-        // DTO → Entity
         Venue venue = new Venue();
         venue.setName(requestDTO.getName());
         venue.setAddress(requestDTO.getAddress());
@@ -27,7 +26,6 @@ public class VenueService {
 
         Venue saved = venueRepository.save(venue);
 
-        // Entity → DTO
         return VenueResponseDTO.builder()
                 .venue_id(saved.getVenue_id())
                 .name(saved.getName())
