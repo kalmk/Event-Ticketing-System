@@ -1,7 +1,7 @@
 ## Names and CWID
-- Ju Yeong Kim
-- Kshitji Pingle
-- Mariia Nikitash
+- Ju Yeong Kim (885734315)
+- Kshitji Pingle (885626978)
+- Mariia Nikitash (885919944)
 
 ## Overview of the project
 
