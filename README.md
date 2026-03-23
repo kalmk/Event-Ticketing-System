@@ -1,5 +1,5 @@
 ## Names and CWID
-- Ju Yeong Kim (885734315)
+- Ju Yeong Kim (885745315)
 - Kshitji Pingle (885626978)
 - Mariia Nikitash (885919944)
 
