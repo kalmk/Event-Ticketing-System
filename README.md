@@ -5,7 +5,7 @@
 
 ## Overview of the project
 
-- A backend API for managing events, venues, organizers, different types of tickets, and the attendees who book them.
+- This project is an event ticketing system backend that allows users to choose between being an organizer or an attendee. An organizer is able to create and manage events, while an attendee is able to book tickets to events they chose. The system is able to track bookings made by attendees, along with details such as payment status and other information.
 
 ## Screenshots
 
